@@ -1,39 +1,50 @@
-import type {MediaItem} from '../types/DBTypes';
+import type { MediaItem } from '../types/DBTypes';
+import { motion } from 'framer-motion';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import Button from '@mui/material/Button';
 
+// مكون يعرض تفاصيل عنصر وسائط (صورة أو فيديو) في نافذة حوارية
 const SingleView = (props: {
   item: MediaItem | undefined;
   setSelectedItem: (item: MediaItem | undefined) => void;
 }) => {
-  const {item, setSelectedItem} = props;
+  const { item, setSelectedItem } = props;
   return (
-    // TODO: Add JSX for displaying a mediafile here
-    <dialog open>
+    <Dialog open={!!item} onClose={() => setSelectedItem(undefined)} maxWidth="sm" fullWidth>
       {item && (
-        <>
-          <h2>{item.title}</h2>
-          {item.media_type.split('/')[0] === 'image' && (
-            <img src={item.filename} alt={item.description || item.title} />
-          )}
-          {item.media_type.split('/')[0] === 'video' && (
-            // TODO: Add controls to the video element
-            <video src={item.filename} />
-          )}
-          <p>{item.description}</p>
-          <p>
-            Uploaded {new Date(item.created_at).toLocaleString('en-fi')} by user
-            id {item.user_id}
-          </p>
-
-          <button
-            onClick={() => {
-              setSelectedItem(undefined);
-            }}
-          >
-            Close
-          </button>
-        </>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.95 }}
+          transition={{ duration: 0.4 }}
+        >
+          <DialogTitle>{item.title}</DialogTitle>
+          <DialogContent>
+            {/* إذا كان نوع الوسائط صورة، اعرض صورة */}
+            {item.media_type.split('/')[0] === 'image' && (
+              <img src={item.filename} alt={item.description || item.title} style={{ maxWidth: '100%', borderRadius: 8 }} />
+            )}
+            {/* إذا كان نوع الوسائط فيديو، اعرض فيديو */}
+            {item.media_type.split('/')[0] === 'video' && (
+              <video src={item.filename} style={{ maxWidth: '100%', borderRadius: 8 }} /* يمكنك إضافة controls لاحقًا */ />
+            )}
+            <p>{item.description}</p>
+            {/* عرض تاريخ التحميل ومعرّف المستخدم */}
+            <p style={{ fontSize: 13, color: '#888' }}>
+              Uploaded {new Date(item.created_at).toLocaleString('en-fi')} by user id {item.user_id}
+            </p>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setSelectedItem(undefined)} variant="contained" color="primary">
+              Close
+            </Button>
+          </DialogActions>
+        </motion.div>
       )}
-    </dialog>
+    </Dialog>
   );
 };
 

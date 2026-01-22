@@ -1,10 +1,10 @@
-import type {MediaItem} from '../types/DBTypes';
+import type { MediaItem } from '../types/DBTypes';
 
 const MediaRow = (props: {
   item: MediaItem;
   setSelectedItem: (item: MediaItem | undefined) => void;
 }) => {
-  const {item, setSelectedItem} = props;
+  const { item, setSelectedItem } = props;
 
   return (
     <tr>
@@ -19,7 +19,6 @@ const MediaRow = (props: {
       <td>
         <button onClick={() => setSelectedItem(item)}>View</button>
       </td>
-      
     </tr>
   );
 };
